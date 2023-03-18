@@ -16,41 +16,43 @@ print(f'Given an array of unsorted numbers and a target number, find a triplet i
 # n so that would be n^2. so for time its O(nlogn) + n^2 which is just n^2 and that is way better than n^3
 # space complexity would be O(n)
 
-def triple_sum_close_to_target(arr):
+def triple_sum_close_to_target(arr, target):
     arr.sort()  # n(log(n))
     print(json.dumps(arr))
     smallest_difference = float('inf')
     triples_sum = float('inf')
     temp_sum = 0
-    for i in range(0, len(arr), 1):
+    for i in range(0, len(arr) - 2, 1):
+        [smallest_difference, temp_sum] = _two_sum_close_to_target(arr, arr[i], i + 1, smallest_difference, target, triples_sum)
+        triples_sum = min(temp_sum, triples_sum)
+
+    return triples_sum
 
 
+# tricky logic in second half of if statement to see if when we are even in difference
+#           if the currentSum is less than target as opposed to greater than target
+#           if its less than target than the curDelta should be positive and thus bigger
+#           than the negative smallest_difference counterpart
 
-    for i in range(0, len(arr), 1):
-        if i > 0 and arr[i] == arr[i - 1]:
-            continue
-        _two_sum_to_zero(arr, -arr[i], i + 1, triplets)
-
-    return triplets
-
-
-def _two_sum_to_zero(arr, target, startIdx, triplets):
+def _two_sum_close_to_target(arr, first, start_idx, smallest_difference, target, triples_sum):
     right = len(arr) - 1
-    left = startIdx
+    left = start_idx
     while left < right:
-        current_sum = arr[left] + arr[right]
-        if current_sum == target:
-            triplets.append([-target, arr[left], arr[right]])
-            left += 1
-            right -= 1
-            while left < right and arr[left] == arr[left - 1]:
-                left += 1
-            while left < right and arr[right] == arr[right + 1]:
-                right -= 1
-        elif current_sum < target:
+        current_sum = arr[left] + arr[right] + first
+        cur_delta = target - current_sum
+        if cur_delta == 0:
+            return cur_delta
+        if abs(cur_delta) < abs(smallest_difference) or \
+                (abs(cur_delta) == abs(smallest_difference) and cur_delta > smallest_difference):
+            smallest_difference = cur_delta
+            triples_sum = current_sum
+
+        if cur_delta > 0:
             left += 1
         else:
             right -= 1
 
+    return [smallest_difference, triples_sum]
 
-print(triple_sum_to_zero(input))
+
+print(triple_sum_close_to_target(input, target))
