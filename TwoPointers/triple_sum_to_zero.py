@@ -6,15 +6,17 @@ input = [-3, 0, 1, 2, -1, 1, -2]
 print(f'input unsorted array:  [{input}]. ')
 
 
-# move left all the way to the first negative integer in the array and right to the first non negative
-# move left pointer left while right increases and asssess each value and move points accordingly
-# time is O n and space is O n since we go through array once and have to construct new array of squares
+# sort the array so its easier to find duplicates its not like binary search since we are moving the pointers
+# incrementally or decrementally by 1 not saying left = mid + 1 etc
+# sorting the array is O (n * logN) and we are searching the entire array for two sum to zero for each
+# n so that would be n^2. so for time its O(nlogn) + n^2 which is just n^2 and that is way better than n^3
+# space complexity would be O(n)
 
 def triple_sum_to_zero(arr):
     arr.sort()  # n(log(n))
     print(json.dumps(arr))
     triplets = []
-    for i in range(0, len(arr), 1):
+    for i in range(0, len(arr) - 2, 1):
         if i > 0 and arr[i] == arr[i - 1]:
             continue
         _two_sum_to_zero(arr, -arr[i], i + 1, triplets)
